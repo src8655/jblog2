@@ -24,7 +24,30 @@ function login_form_check(var1) {
 		return;
 	}
 	
-	forms.submit();
+
+	/* ajax 통신 */
+	$.ajax({
+		url: "${pageContext.servletContext.contextPath}/user/api/checklogin",
+		type: "post",
+		dataType: "json",
+		data: {
+			'id':forms.id.value,
+			'password':forms.password.value
+		},
+		success: function(response){
+			if(response.result != "success") {
+				alert(response.message);
+				return;
+			}
+			
+			forms.submit();
+		},
+		error: function(xhr, error){
+			console.error("error:" + error);
+		}
+	});
+	
+	
 }
 </script>
 </head>

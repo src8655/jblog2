@@ -23,7 +23,8 @@
 		a.title,
 		a.content,
 		DATE_FORMAT(a.reg_date,'%Y-%m-%d') as regDate,
-		a.category_no as categoryNo
+		a.category_no as categoryNo,
+		b.name as categoryName
 		from post a, category b
 		where a.category_no=b.no
 		and b.blog_id=#{blogId}
@@ -37,7 +38,8 @@
 		a.title,
 		a.content,
 		DATE_FORMAT(a.reg_date,'%Y-%m-%d') as regDate,
-		a.category_no as categoryNo
+		a.category_no as categoryNo,
+		b.name as categoryName
 		from post a, category b
 		where a.category_no=b.no
 		and b.blog_id=#{blogId}
@@ -52,7 +54,8 @@
 		a.title,
 		a.content,
 		DATE_FORMAT(a.reg_date,'%Y-%m-%d') as regDate,
-		a.category_no as categoryNo
+		a.category_no as categoryNo,
+		b.name as categoryName
 		from post a, category b
 		where a.category_no=b.no
 		and b.blog_id=#{blogId}
@@ -65,7 +68,8 @@
 		a.no,
 		a.title,
 		DATE_FORMAT(a.reg_date,'%Y-%m-%d') as regDate,
-		a.category_no as categoryNo
+		a.category_no as categoryNo,
+		b.name as categoryName
 		from post a, category b
 		where a.category_no=b.no
 		and b.blog_id=#{blogId}
@@ -78,7 +82,8 @@
 		a.no,
 		a.title,
 		DATE_FORMAT(a.reg_date,'%Y-%m-%d') as regDate,
-		a.category_no as categoryNo
+		a.category_no as categoryNo,
+		b.name as categoryName
 		from post a, category b
 		where a.category_no=b.no
 		and b.blog_id=#{blogId}

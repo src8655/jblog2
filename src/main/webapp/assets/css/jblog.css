@@ -75,8 +75,9 @@ div#content	.blog-content	{ padding:10px }
 div#content .blog-list		{ margin:20px 0 10px 10px }
 .blog-list 					{ width:100% }
 .blog-list li				{ height:20px; clear:both; }
-.blog-list li a				{ display:block; float:left }
-.blog-list li span			{ display:block; float:right; margin-right:30px }
+.blog-list li a				{ display:block; float:left; color:#676767;text-decoration:none; }
+.blog-list li a:hover		{ color:red;text-decoration:underline; }
+.blog-list li span			{ display:block; float:right; margin-right:30px; }
 
 /* admin content */
 div#content .admin-menu					{ height:20px; margin-top:15px; margin-bottom:10px }

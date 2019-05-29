@@ -42,9 +42,9 @@ public class BlogController {
 		
 		BlogVo blogVo = blogService.getBlogInfo(blogId);
 		model.addAttribute("blogVo", blogVo);
-
-		if(pathNo1.isPresent()) System.out.println("pathNo1 : " + pathNo1.get());
-		if(pathNo2.isPresent()) System.out.println("pathNo2 : " + pathNo2.get());
+		
+		if(pathNo1.isPresent()) model.addAttribute("hasCategory", true);
+		else model.addAttribute("hasCategory", false);
 		
 		//포스트 뷰
 		PostVo mainPostVo = blogService.getPost(pathNo1, pathNo2, blogId);

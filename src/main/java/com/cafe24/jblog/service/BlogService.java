@@ -23,6 +23,8 @@ import com.cafe24.jblog.vo.UserVo;
 
 @Service
 public class BlogService {
+	public static final int BOARD_CNT = 3;	//한번에 보여질 게시글
+	public static final int PAGE_CNT = 3;	//페이지 버튼 개수
 	
 	//파일 저장 위치
 	private static final String SAVE_PATH = "/jblog-uploads";
@@ -162,6 +164,8 @@ public class BlogService {
 	}
 
 	public List<PostVo> getPostList(Optional<Long> pathNo1, String blogId) {
+		int count = 0;
+		//List<PostVo>
 		
 		// 1. pathNo1이 존재하면 => pathNo1 카테고리의 포스트 리스트
 		if(pathNo1.isPresent()) {
@@ -173,5 +177,30 @@ public class BlogService {
 			// 2. pathno1이 존재하지 않으면 => 전체 카테고리의 포스트 리스트
 			return postDao.getPostList(blogId);
 		}
+		/*
+		//페이징
+		int count = boardDao.getCount(kwd);	//총 게시글 개수
+		int lastPage = (int) Math.ceil((double)count/(double)BOARD_CNT);	//마지막 페이지
+		int startNum = ((pages-1) * BOARD_CNT);		//시작번호
+		int rangeStart = ((pages-1)/PAGE_CNT) * PAGE_CNT + 1;		//페이지 범위
+
+		Map<String, Integer> pagingMap = new HashMap<String, Integer>();
+		pagingMap.put("count", count);
+		pagingMap.put("lastPage", lastPage);
+		pagingMap.put("startNum", startNum);
+		pagingMap.put("rangeStart", rangeStart);
+		pagingMap.put("boardCnt", BOARD_CNT);
+		pagingMap.put("pageCnt", PAGE_CNT);
+		
+		Map<String, Object> daoMap = new HashMap<String, Object>();
+		daoMap.put("startNum", startNum);
+		daoMap.put("boardCnt", BOARD_CNT);
+		daoMap.put("kwd", kwd);
+		
+		List<BoardVo> list = boardDao.getList(daoMap);
+		
+		Map<String, Object> map = new HashMap<String, Object>();
+		map.put("list", list);
+		map.put("pagingMap", pagingMap);*/
 	}
 }

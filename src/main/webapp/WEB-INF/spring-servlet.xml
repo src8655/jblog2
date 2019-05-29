@@ -89,6 +89,15 @@
         	<mvc:mapping path="/*/admin/**" />
     		<bean class="com.cafe24.security.AuthInterceptor" />
         </mvc:interceptor>
+        <mvc:interceptor>
+        	<mvc:mapping path="/**" />
+        	<mvc:exclude-mapping path=""/>
+        	<mvc:exclude-mapping path="/"/>
+        	<mvc:exclude-mapping path="/user/**"/>
+        	<mvc:exclude-mapping path="/*/admin/**" />
+        	<mvc:exclude-mapping path="/assets/**" />
+    		<bean class="com.cafe24.jblog.interceptor.BlogInterceptor" />
+        </mvc:interceptor>
         
 <!--         <mvc:interceptor>
         	<mvc:mapping path="/board/view" />
