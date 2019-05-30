@@ -3,6 +3,7 @@ package com.cafe24.jblog.controller.api;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.validation.Valid;
 
@@ -10,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -18,6 +20,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.cafe24.jblog.dto.JSONResult;
 import com.cafe24.jblog.service.BlogService;
 import com.cafe24.jblog.vo.CategoryVo;
+import com.cafe24.jblog.vo.PostVo;
 import com.cafe24.jblog.vo.UserVo;
 import com.cafe24.security.Auth;
 import com.cafe24.security.AuthUser;
@@ -95,5 +98,20 @@ public class BlogController {
 		
 		return JSONResult.success(true);
 		
+	}
+	
+	
+	@ResponseBody
+	@RequestMapping(value="/postPaging", method = RequestMethod.POST)
+	public JSONResult postPaging(
+			@RequestParam(value="blogId", required = true, defaultValue = "-1") String blogId,
+			@RequestParam(value="categoryNo", required = true, defaultValue = "-1") Long categoryNo,
+			@RequestParam(value="pages", required = true, defaultValue = "1") int pages
+			) {
+		
+		//포스트 리스트
+		Map<String, Object> postMap = blogService.getPostListAjax(blogId, categoryNo, pages);
+		
+		return JSONResult.success(postMap);
 	}
 }

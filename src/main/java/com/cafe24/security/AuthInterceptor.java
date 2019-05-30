@@ -16,8 +16,6 @@ public class AuthInterceptor extends HandlerInterceptorAdapter {
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
 			throws Exception {
 		
-		
-		
 		//Auth가 안붙어있으면 무시
 		//Auth가 붙어있으면 진행
 		

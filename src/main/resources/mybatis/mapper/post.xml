@@ -75,9 +75,10 @@
 		and b.blog_id=#{blogId}
 		and a.category_no=#{pathNo1}
 		order by no desc
+		limit #{startNum}, #{boardCnt}
 	</select>
 	
-	<select id="getPostList" parameterType="String" resultType="postvo">
+	<select id="getPostList" parameterType="java.util.Map" resultType="postvo">
 		select
 		a.no,
 		a.title,
@@ -88,6 +89,38 @@
 		where a.category_no=b.no
 		and b.blog_id=#{blogId}
 		order by no desc
+		limit #{startNum}, #{boardCnt}
+	</select>
+	
+	
+	<select id="countPostListNo1" parameterType="java.util.Map" resultType="Integer">
+		select
+		count(a.no)
+		from post a, category b
+		where a.category_no=b.no
+		and b.blog_id=#{blogId}
+		and a.category_no=#{pathNo1}
+	</select>
+	
+	<select id="countPostList" parameterType="String" resultType="Integer">
+		select
+		count(a.no)
+		from post a, category b
+		where a.category_no=b.no
+		and b.blog_id=#{blogId}
+	</select>
+	
+	<!-- 내 현재 위치 -->
+	<select id="countPositionNo2" parameterType="java.util.Map" resultType="Integer">
+		select aa.nn as num
+		from
+		(SELECT @rownum:=@rownum+1 as nn, a.no
+		FROM post a, category b, (SELECT @rownum:=0) TMP
+		where a.category_no=b.no
+		and b.blog_id=#{blogId}
+		and a.category_no=#{pathNo1}
+		order by no desc) aa
+		where no=#{no}
 	</select>
 	
 </mapper>

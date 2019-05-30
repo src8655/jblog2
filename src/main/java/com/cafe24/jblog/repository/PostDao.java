@@ -40,7 +40,21 @@ public class PostDao {
 		return sqlSession.selectList("post.getPostListNo1", map);
 	}
 
-	public List<PostVo> getPostList(String blogId) {
-		return sqlSession.selectList("post.getPostList", blogId);
+	public List<PostVo> getPostList(Map<String, Object> map) {
+		return sqlSession.selectList("post.getPostList", map);
+	}
+
+	public int countPostListNo1(Map<String, Object> map) {
+		return (Integer)sqlSession.selectOne("post.countPostListNo1", map);
+	}
+
+	public int countPostList(String blogId) {
+		return (Integer)sqlSession.selectOne("post.countPostList", blogId);
+	}
+
+	public int countPositionNo2(Map<String, Object> positionMap) {
+		Integer result = (Integer)sqlSession.selectOne("post.countPositionNo2", positionMap);
+		if(result == null) return 1;
+		else return result;
 	}
 }

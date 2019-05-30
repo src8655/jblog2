@@ -1,6 +1,7 @@
 package com.cafe24.jblog.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.validation.Valid;
@@ -51,8 +52,11 @@ public class BlogController {
 		model.addAttribute("mainPostVo", mainPostVo);
 		
 		//포스트 리스트
-		List<PostVo> mainPostList = blogService.getPostList(pathNo1, blogId);
+		Map<String, Object> postMap = blogService.getPostList(pathNo1, pathNo2, blogId);
+		List<PostVo> mainPostList = (List<PostVo>)postMap.get("postList");
 		model.addAttribute("mainPostList", mainPostList);
+		Map<String, Integer> pagingMap = (Map<String, Integer>)postMap.get("pagingMap");
+		model.addAttribute("pagingMap", pagingMap);
 		
 		//카테고리 리스트
 		List<CategoryVo> categoryList = blogService.getCategoryList(blogId);

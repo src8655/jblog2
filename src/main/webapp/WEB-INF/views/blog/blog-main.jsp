@@ -8,6 +8,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <title>JBlog</title>
 <Link rel="stylesheet" href="${pageContext.request.contextPath}/assets/css/jblog.css">
+<script type="text/javascript" src="${pageContext.request.contextPath}/assets/js/jquery/jquery-1.9.0.js"></script>
 
 <style type="text/css">
 .blog-content-header {
@@ -62,7 +63,109 @@ padding:0px;
 margin:0px;
 overflow:hidden;
 }
+
+/*
+	게시판 리스트 페이징
+*/
+div.pager {
+	width:100%;
+	text-align:center;
+}
+div.pager  ul {
+	height:20px;
+	margin:10px auto;
+}
+div.pager  ul li 			{ color:#ddd; display:inline-block; margin:5px 0; width:20px ; font-weight:bold; }
+div.pager  ul li.selected	{ font-size:16px; text-decoration: underline; color:#f40808 }
+div.pager  ul li a,
+div.pager  ul li a:visited,
+div.pager  ul li a:link,
+div.pager  ul li a:active	{ text-decoration: none; color:#555 }
+div.pager  ul li a:hover	{ text-decoration: none; color:#f00 }
 </style>
+
+
+<script type="text/javascript">
+function pagingRefresh(pages, categoryNo, blogId) {
+	//alert("ddd");
+	/* ajax 통신 */
+	$.ajax({
+		url: "${pageContext.servletContext.contextPath}/blog/admin/api/postPaging",
+		type: "post",
+		dataType: "json",
+		data: {
+			'pages':pages,
+			'categoryNo':categoryNo,
+			'blogId':blogId
+		},
+		success: function(response){
+			if(response.result != "success") {
+				alert(response.message);
+				return;
+			}
+			
+			//페이징 부분 만들기
+			var htmls = "";
+			var pagingMap = response.data.pagingMap;
+			htmls = '<ul>';
+			if((pagingMap.rangeStart-1) < 1)
+				htmls += '	<li>◀</li>';
+			if((pagingMap.rangeStart-1) >= 1)
+				htmls += '	<li><a href="#100">◀</a></li>';
+			
+			var i = 0;
+			for(i=pagingMap.rangeStart;i<=(pagingMap.rangeStart + pagingMap.pageCnt - 1);i++) {
+				if(i > pagingMap.lastPage)
+					htmls += '<li>'+i+'</li>';
+				if(i <= pagingMap.lastPage) {
+					if(i == pagingMap.pages)
+						htmls += '<li class="selected">'+i+'</li>';
+					else {
+						if('${hasCategory}' == 'false')
+							htmls += '<li><a href="#100" onclick="pagingRefresh('+i+',-1,\'${blogVo.blogId}\');">'+i+'</a></li>';
+						else
+							htmls += '<li><a href="#100" onclick="pagingRefresh('+i+',${mainPostVo.categoryNo},\'${blogVo.blogId}\');">'+i+'</a></li>';
+					}
+				}
+			}
+			if((pagingMap.rangeStart + pagingMap.pageCnt) <= pagingMap.lastPage)
+				htmls += '<li><a href="#100">▶</a></li>';
+			if((pagingMap.rangeStart + pagingMap.pageCnt) >= pagingMap.lastPage)
+				htmls += '<li>▶</li>';
+				
+			htmls += '</ul>';
+			
+			document.getElementById("pager_bk").innerHTML = htmls;
+			
+
+			
+			
+			
+			//리스트 부분 만들기
+			htmls = "";
+			var postList = response.data.postList;
+			for(i=0;i<postList.length;i++) {
+				var plist = postList[i];
+				htmls +=	'<li>';
+				htmls +=	'<a href="${pageContext.request.contextPath}/${blogVo.blogId}/'+plist.categoryNo+'/'+plist.no+'">';
+				htmls +=	'	['+plist.categoryName+'] '+plist.title;
+				htmls +=	'</a>';
+				htmls +=	'<span>'+plist.regDate+'</span>';
+				htmls +=	'</li>';
+			}
+
+			document.getElementById("blog_list_bk").innerHTML = htmls;
+			
+		},
+		error: function(xhr, error){
+			console.error("error:" + error);
+		}
+	});
+	
+	
+}
+</script>
+
 
 </head>
 <body>
@@ -97,7 +200,7 @@ overflow:hidden;
 					<c:if test="${hasCategory eq true}"><span style="color:#cf8b0c;">${mainPostVo.categoryName}</span></c:if>
 					 카테고리 글
 				</h3>
-				<ul class="blog-list">
+				<ul class="blog-list" id="blog_list_bk">
 					<c:forEach items="${mainPostList}" var="plist">
 						<li>
 							<a href="${pageContext.request.contextPath}/${blogVo.blogId}/${plist.categoryNo}/${plist.no}">
@@ -107,6 +210,48 @@ overflow:hidden;
 						</li>
 					</c:forEach>
 				</ul>
+				<!-- pager 추가 -->
+				<div class="pager" id="pager_bk">
+					<ul>
+						<!-- 1보다 작으면 버튼 비활성화 -->
+						<c:if test="${(pagingMap.rangeStart - 1) lt 1}">
+							<li>◀</li>
+						</c:if>
+						<!-- 1보다 같거나 크면 버튼 활성화-->
+						<c:if test="${(pagingMap.rangeStart - 1) ge 1}">
+							<li><a href="#100">◀</a></li>
+						</c:if>
+						<c:forEach begin="${pagingMap.rangeStart}" end="${pagingMap.rangeStart + pagingMap.pageCnt - 1}" var="i">
+							<!-- 최대 페이지를 넘어가면 비활성화 -->
+							<c:if test="${i gt pagingMap.lastPage}">
+								<li>${i}</li>
+							</c:if>
+							<c:if test="${i le pagingMap.lastPage}">
+								<c:if test="${i eq pagingMap.pages}">
+									<li class="selected">${i}</li>
+								</c:if>
+								<c:if test="${i ne pagingMap.pages}">
+									<c:if test="${hasCategory eq false}">
+									<li><a href="#100" onclick="pagingRefresh(${i},-1,'${blogVo.blogId}');">${i}</a></li>
+									</c:if>
+									<c:if test="${hasCategory eq true}">
+									<li><a href="#100" onclick="pagingRefresh(${i},${mainPostVo.categoryNo},'${blogVo.blogId}');">${i}</a></li>
+									</c:if>
+								</c:if>
+							</c:if>
+						</c:forEach>
+						<!-- 최대 페이지보다 작거나 같으면 버튼활성화 -->
+						<c:if test="${(pagingMap.rangeStart + pagingMap.pageCnt) le pagingMap.lastPage}">
+							<li><a href="#100">▶</a></li>
+						</c:if>
+						<!-- 최대 페이지보다 크면 버튼 비활성화 -->
+						<c:if test="${(pagingMap.rangeStart + pagingMap.pageCnt) gt pagingMap.lastPage}">
+							<li>▶</li>
+						</c:if>
+							
+					</ul>
+				</div>					
+				<!-- pager 추가 -->
 				</c:if>
 			</div>
 		</div>

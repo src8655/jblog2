@@ -163,23 +163,71 @@ public class BlogService {
 		return new PostVo();
 	}
 
-	public List<PostVo> getPostList(Optional<Long> pathNo1, String blogId) {
-		int count = 0;
-		//List<PostVo>
-		
+	public Map<String, Object> getPostList(Optional<Long> pathNo1, Optional<Long> pathNo2, String blogId) {
 		// 1. pathNo1이 존재하면 => pathNo1 카테고리의 포스트 리스트
 		if(pathNo1.isPresent()) {
+			int pages = 1;
+			
+			//게시글이 존재하면 그 게시글의 pages위치를 찾는다
+			if(pathNo2.isPresent()) {
+				Map<String, Object> positionMap = new HashMap<String, Object>();
+				positionMap.put("no", pathNo2.get());
+				positionMap.put("blogId", blogId);
+				positionMap.put("pathNo1", pathNo1.get());
+				int position = postDao.countPositionNo2(positionMap);
+				
+				
+				//내 위치에 따른 pages 구하기
+				pages = ((int) Math.floor((double)(position-1)/(double)BOARD_CNT))+1;
+			}
+			
+			
 			Map<String, Object> map = new HashMap<String, Object>();
 			map.put("blogId", blogId);
 			map.put("pathNo1", pathNo1.get());
-			return postDao.getPostListNo1(map);
+			int count = postDao.countPostListNo1(map);
+			
+			Map<String, Integer> pagingMap = makePaging(count, pages);
+			
+			Map<String, Object> daoMap = new HashMap<String, Object>();
+			daoMap.put("startNum", pagingMap.get("startNum"));
+			daoMap.put("boardCnt", pagingMap.get("boardCnt"));
+			daoMap.put("blogId", blogId);
+			daoMap.put("pathNo1", pathNo1.get());
+			
+			List<PostVo> result = postDao.getPostListNo1(daoMap);
+			
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("postList", result);
+			resultMap.put("pagingMap", pagingMap);
+			
+			return resultMap;
+			
+			
 		}else{
 			// 2. pathno1이 존재하지 않으면 => 전체 카테고리의 포스트 리스트
-			return postDao.getPostList(blogId);
+			int pages = 1;
+			
+			int count = postDao.countPostList(blogId);
+
+			Map<String, Integer> pagingMap = makePaging(count, pages);
+			
+			Map<String, Object> daoMap = new HashMap<String, Object>();
+			daoMap.put("startNum", pagingMap.get("startNum"));
+			daoMap.put("boardCnt", pagingMap.get("boardCnt"));
+			daoMap.put("blogId", blogId);
+			
+			List<PostVo> result = postDao.getPostList(daoMap);
+			
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("postList", result);
+			resultMap.put("pagingMap", pagingMap);
+			
+			return resultMap;
 		}
-		/*
-		//페이징
-		int count = boardDao.getCount(kwd);	//총 게시글 개수
+	}
+	public Map<String, Integer> makePaging(int count, int pages) {
+		
 		int lastPage = (int) Math.ceil((double)count/(double)BOARD_CNT);	//마지막 페이지
 		int startNum = ((pages-1) * BOARD_CNT);		//시작번호
 		int rangeStart = ((pages-1)/PAGE_CNT) * PAGE_CNT + 1;		//페이지 범위
@@ -191,16 +239,53 @@ public class BlogService {
 		pagingMap.put("rangeStart", rangeStart);
 		pagingMap.put("boardCnt", BOARD_CNT);
 		pagingMap.put("pageCnt", PAGE_CNT);
+		pagingMap.put("pages", pages);
 		
-		Map<String, Object> daoMap = new HashMap<String, Object>();
-		daoMap.put("startNum", startNum);
-		daoMap.put("boardCnt", BOARD_CNT);
-		daoMap.put("kwd", kwd);
+		return pagingMap;
+	}
+
+	public Map<String, Object> getPostListAjax(String blogId, Long categoryNo, int pages) {
 		
-		List<BoardVo> list = boardDao.getList(daoMap);
+		//특정 카테고리
+		if(categoryNo != -1) {
+			Map<String, Object> map = new HashMap<String, Object>();
+			map.put("blogId", blogId);
+			map.put("pathNo1", categoryNo);
+			int count = postDao.countPostListNo1(map);
+			
+			Map<String, Integer> pagingMap = makePaging(count, pages);
+			
+			Map<String, Object> daoMap = new HashMap<String, Object>();
+			daoMap.put("startNum", pagingMap.get("startNum"));
+			daoMap.put("boardCnt", pagingMap.get("boardCnt"));
+			daoMap.put("blogId", blogId);
+			daoMap.put("pathNo1", categoryNo);
+			
+			List<PostVo> result = postDao.getPostListNo1(daoMap);
+			
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("postList", result);
+			resultMap.put("pagingMap", pagingMap);
+			
+			return resultMap;
 		
-		Map<String, Object> map = new HashMap<String, Object>();
-		map.put("list", list);
-		map.put("pagingMap", pagingMap);*/
+		}else {
+			int count = postDao.countPostList(blogId);
+
+			Map<String, Integer> pagingMap = makePaging(count, pages);
+			
+			Map<String, Object> daoMap = new HashMap<String, Object>();
+			daoMap.put("startNum", pagingMap.get("startNum"));
+			daoMap.put("boardCnt", pagingMap.get("boardCnt"));
+			daoMap.put("blogId", blogId);
+			
+			List<PostVo> result = postDao.getPostList(daoMap);
+			
+			Map<String, Object> resultMap = new HashMap<String, Object>();
+			resultMap.put("postList", result);
+			resultMap.put("pagingMap", pagingMap);
+			
+			return resultMap;
+		}
 	}
 }
