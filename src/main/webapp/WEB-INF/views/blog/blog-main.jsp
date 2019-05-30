@@ -110,9 +110,12 @@ function pagingRefresh(pages, categoryNo, blogId) {
 			htmls = '<ul>';
 			if((pagingMap.rangeStart-1) < 1)
 				htmls += '	<li>◀</li>';
-			if((pagingMap.rangeStart-1) >= 1)
-				htmls += '	<li><a href="#100">◀</a></li>';
-			
+			if((pagingMap.rangeStart-1) >= 1) {
+				if('${hasCategory}' == 'false')
+					htmls += '	<li><a href="#100" onclick="pagingRefresh('+(pagingMap.rangeStart - 1)+',-1,\'${blogVo.blogId}\')">◀</a></li>';
+				else
+					htmls += '	<li><a href="#100" onclick="pagingRefresh('+(pagingMap.rangeStart - 1)+',${mainPostVo.categoryNo},\'${blogVo.blogId}\')">◀</a></li>';
+			}
 			var i = 0;
 			for(i=pagingMap.rangeStart;i<=(pagingMap.rangeStart + pagingMap.pageCnt - 1);i++) {
 				if(i > pagingMap.lastPage)
@@ -128,8 +131,12 @@ function pagingRefresh(pages, categoryNo, blogId) {
 					}
 				}
 			}
-			if((pagingMap.rangeStart + pagingMap.pageCnt) <= pagingMap.lastPage)
-				htmls += '<li><a href="#100">▶</a></li>';
+			if((pagingMap.rangeStart + pagingMap.pageCnt) <= pagingMap.lastPage) {
+				if('${hasCategory}' == 'false')
+					htmls += '<li><a href="#100" onclick="pagingRefresh('+(pagingMap.rangeStart + pagingMap.pageCnt)+',-1,\'${blogVo.blogId}\')">▶</a></li>';
+				else
+					htmls += '<li><a href="#100" onclick="pagingRefresh('+(pagingMap.rangeStart + pagingMap.pageCnt)+',${mainPostVo.categoryNo},\'${blogVo.blogId}\')">▶</a></li>';
+			}
 			if((pagingMap.rangeStart + pagingMap.pageCnt) >= pagingMap.lastPage)
 				htmls += '<li>▶</li>';
 				
@@ -139,15 +146,18 @@ function pagingRefresh(pages, categoryNo, blogId) {
 			
 
 			
-			
-			
 			//리스트 부분 만들기
 			htmls = "";
 			var postList = response.data.postList;
+			var mainPostVo = '${mainPostVo}';
 			for(i=0;i<postList.length;i++) {
 				var plist = postList[i];
 				htmls +=	'<li>';
-				htmls +=	'<a href="${pageContext.request.contextPath}/${blogVo.blogId}/'+plist.categoryNo+'/'+plist.no+'">';
+				htmls +=	'<a href="${pageContext.request.contextPath}/${blogVo.blogId}/'+plist.categoryNo+'/'+plist.no+'" ';
+				if(mainPostVo != '' && '${mainPostVo.no}' == plist.no) {
+					htmls += 'style="color:red;"';
+				}
+				htmls +=	'>';
 				htmls +=	'	['+plist.categoryName+'] '+plist.title;
 				htmls +=	'</a>';
 				htmls +=	'<span>'+plist.regDate+'</span>';
@@ -203,8 +213,15 @@ function pagingRefresh(pages, categoryNo, blogId) {
 				<ul class="blog-list" id="blog_list_bk">
 					<c:forEach items="${mainPostList}" var="plist">
 						<li>
-							<a href="${pageContext.request.contextPath}/${blogVo.blogId}/${plist.categoryNo}/${plist.no}">
-								[${plist.categoryName}] ${plist.title}
+							<a href="${pageContext.request.contextPath}/${blogVo.blogId}/${plist.categoryNo}/${plist.no}" >
+								<c:if test="${mainPostVo ne null}">
+								<c:if test="${mainPostVo.no eq plist.no}">
+									<span style="color:red;">[${plist.categoryName}] ${plist.title}</span>
+								</c:if>
+								<c:if test="${mainPostVo.no ne plist.no}">
+									[${plist.categoryName}] ${plist.title}
+								</c:if>
+								</c:if>
 							</a>
 							<span>${plist.regDate}</span>
 						</li>
@@ -219,7 +236,12 @@ function pagingRefresh(pages, categoryNo, blogId) {
 						</c:if>
 						<!-- 1보다 같거나 크면 버튼 활성화-->
 						<c:if test="${(pagingMap.rangeStart - 1) ge 1}">
-							<li><a href="#100">◀</a></li>
+							<c:if test="${hasCategory eq false}">
+								<li><a href="#100" onclick="pagingRefresh(${pagingMap.rangeStart - 1},-1,'${blogVo.blogId}')">◀</a></li>
+							</c:if>
+							<c:if test="${hasCategory eq true}">
+								<li><a href="#100" onclick="pagingRefresh(${pagingMap.rangeStart - 1},${mainPostVo.categoryNo},'${blogVo.blogId}')">◀</a></li>
+							</c:if>
 						</c:if>
 						<c:forEach begin="${pagingMap.rangeStart}" end="${pagingMap.rangeStart + pagingMap.pageCnt - 1}" var="i">
 							<!-- 최대 페이지를 넘어가면 비활성화 -->
@@ -242,7 +264,12 @@ function pagingRefresh(pages, categoryNo, blogId) {
 						</c:forEach>
 						<!-- 최대 페이지보다 작거나 같으면 버튼활성화 -->
 						<c:if test="${(pagingMap.rangeStart + pagingMap.pageCnt) le pagingMap.lastPage}">
-							<li><a href="#100">▶</a></li>
+							<c:if test="${hasCategory eq false}">
+								<li><a href="#100" onclick="pagingRefresh(${pagingMap.rangeStart + pagingMap.pageCnt},-1,'${blogVo.blogId}')">▶</a></li>
+							</c:if>
+							<c:if test="${hasCategory eq true}">
+								<li><a href="#100" onclick="pagingRefresh(${pagingMap.rangeStart + pagingMap.pageCnt},${mainPostVo.categoryNo},'${blogVo.blogId}')">▶</a></li>
+							</c:if>
 						</c:if>
 						<!-- 최대 페이지보다 크면 버튼 비활성화 -->
 						<c:if test="${(pagingMap.rangeStart + pagingMap.pageCnt) gt pagingMap.lastPage}">
