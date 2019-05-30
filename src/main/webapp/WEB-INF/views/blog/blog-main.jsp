@@ -97,6 +97,14 @@ div.pager  ul li a:hover	{ text-decoration: none; color:#f00 }
 
 
 <script type="text/javascript">
+//다이어로그
+function dialog(msgs, urls) {
+  var retVal = confirm(msgs);
+   if(retVal == true){
+      location.href=urls;
+   }
+}
+
 function pagingRefresh(pages, categoryNo, blogId) {
 	//alert("ddd");
 	/* ajax 통신 */
@@ -218,7 +226,7 @@ function pagingRefresh(pages, categoryNo, blogId) {
 						<c:if test="${authUser.id eq blogVo.blogId}">
 							<div class="border-content-bottom">
 								<a href="${pageContext.request.contextPath}/${blogVo.blogId}/admin/${mainPostVo.categoryNo}/${mainPostVo.no}/postedit">수정하기</a>
-								<a href="${pageContext.request.contextPath}/${blogVo.blogId}/admin/${mainPostVo.categoryNo}/${mainPostVo.no}/postdel">삭제하기</a>
+								<a href="#100" onclick="dialog('정말로 삭제 하시겠습니까?','${pageContext.request.contextPath}/${blogVo.blogId}/admin/${mainPostVo.categoryNo}/${mainPostVo.no}/postdel');">삭제하기</a>
 							</div>
 						</c:if>
 					</c:if>
