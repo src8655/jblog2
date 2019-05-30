@@ -40,7 +40,7 @@ function form_write_check(var1) {
 					</c:if>
 			      	<table class="admin-cat-write" style="width:100%;">
 			      		<tr>
-			      			<td class="t">제목</td>
+			      			<th class="t">제목</th>
 			      			<td>
 			      				<input type="text" size="60" name="title"  <c:if test="${postVo ne null}">value="${postVo.title}"</c:if> style="float:left;padding:6px 0 6px 0;width:89%" />
 				      			<select name="categoryNo" style="float:right;padding:5px 0 5px 0;width:10%;">
@@ -51,8 +51,7 @@ function form_write_check(var1) {
 				      		</td>
 			      		</tr>
 			      		<tr>
-			      			<td class="t">내용</td>
-			      			<td>
+			      			<td colspan="2">
 				      			<textarea name="content" id="contents"><c:if test="${postVo ne null}">${postVo.content}</c:if></textarea>
 				      			<script>
 								    CKEDITOR.replace('contents', {
@@ -64,7 +63,7 @@ function form_write_check(var1) {
 			      		</tr>
 			      		<tr>
 			      			<td>&nbsp;</td>
-			      			<td class="s"><input type="button" <c:if test="${postVo eq null}">value="포스트하기"</c:if> <c:if test="${postVo ne null}">value="포스트 수정하기"</c:if> onclick="form_write_check('form_write');" /></td>
+			      			<td class="s"><input type="button" style="padding:5px;" <c:if test="${postVo eq null}">value="포스트하기"</c:if> <c:if test="${postVo ne null}">value="포스트 수정하기"</c:if> onclick="form_write_check('form_write');" /></td>
 			      		</tr>
 			      	</table>
 				</form>

@@ -28,7 +28,7 @@ public class BlogService {
 	
 	//파일 저장 위치
 	private static final String SAVE_PATH = "/jblog-uploads";
-	private static final String URL = "/assets/blog-images";
+	private static final String URL = "/images";
 
 	@Autowired
 	BlogDao blogDao;

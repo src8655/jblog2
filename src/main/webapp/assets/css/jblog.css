@@ -89,7 +89,7 @@ div#content .admin-menu a				{ font-weight:bold }
 
 div#content .admin-config,
 div#content .admin-cat-add,
-div#content .admin-cat					{ border:none; width:720px; margin-top:30px }
+div#content .admin-cat					{ border:none; width:100%; margin-top:30px }
 
 .admin-config td.t						{ padding:5px 0; width:75px }
 .admin-config td.s						{ padding:20px 0 10px 0; }

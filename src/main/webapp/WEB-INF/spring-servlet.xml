@@ -43,7 +43,7 @@
 	
 
 	<!-- the mvc resources url mapping -->
-	<mvc:resources mapping="/assets/blog-images/**" location="file:/jblog-uploads/" />
+	<mvc:resources mapping="/images/**" location="file:/jblog-uploads/" />
 
 	<!-- 디폴트 서블릿 핸들러 -->
 	<mvc:default-servlet-handler />

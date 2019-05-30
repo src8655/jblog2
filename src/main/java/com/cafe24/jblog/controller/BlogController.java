@@ -26,14 +26,14 @@ import com.cafe24.security.Auth;
 import com.cafe24.security.AuthUser;
 
 @Controller
-@RequestMapping("/{blogId:(?!assets).*}")
+@RequestMapping("/{blogId:(?!assets|images).*}")
 public class BlogController {
 
 	@Autowired
 	BlogService blogService;
 	
 
-	@RequestMapping({"","/","/{pathNo1}","/{pathNo1}/{pathNo2}"})
+	@RequestMapping({"","/","/{pathNo1:[\\d]+}","/{pathNo1:[\\d]+}/{pathNo2:[\\d]+}"})
 	public String blog(
 			@PathVariable String blogId,
 			@PathVariable Optional<Long> pathNo1,
