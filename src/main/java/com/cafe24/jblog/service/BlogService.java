@@ -163,10 +163,10 @@ public class BlogService {
 		return new PostVo();
 	}
 
-	public Map<String, Object> getPostList(Optional<Long> pathNo1, Optional<Long> pathNo2, String blogId) {
+	public Map<String, Object> getPostList(Optional<Long> pathNo1, Optional<Long> pathNo2, String blogId, int pages) {
 		// 1. pathNo1이 존재하면 => pathNo1 카테고리의 포스트 리스트
 		if(pathNo1.isPresent()) {
-			int pages = 1;
+			//int pages = 1;
 			
 			//게시글이 존재하면 그 게시글의 pages위치를 찾는다
 			if(pathNo2.isPresent()) {
@@ -206,7 +206,7 @@ public class BlogService {
 			
 		}else{
 			// 2. pathno1이 존재하지 않으면 => 전체 카테고리의 포스트 리스트
-			int pages = 1;
+			//int pages = 1;
 			
 			int count = postDao.countPostList(blogId);
 
@@ -245,47 +245,10 @@ public class BlogService {
 	}
 
 	public Map<String, Object> getPostListAjax(String blogId, Long categoryNo, int pages) {
-		
+		Optional<Long> pathNo1 = Optional.empty();
+		Optional<Long> pathNo2 = Optional.empty();
 		//특정 카테고리
-		if(categoryNo != -1) {
-			Map<String, Object> map = new HashMap<String, Object>();
-			map.put("blogId", blogId);
-			map.put("pathNo1", categoryNo);
-			int count = postDao.countPostListNo1(map);
-			
-			Map<String, Integer> pagingMap = makePaging(count, pages);
-			
-			Map<String, Object> daoMap = new HashMap<String, Object>();
-			daoMap.put("startNum", pagingMap.get("startNum"));
-			daoMap.put("boardCnt", pagingMap.get("boardCnt"));
-			daoMap.put("blogId", blogId);
-			daoMap.put("pathNo1", categoryNo);
-			
-			List<PostVo> result = postDao.getPostListNo1(daoMap);
-			
-			Map<String, Object> resultMap = new HashMap<String, Object>();
-			resultMap.put("postList", result);
-			resultMap.put("pagingMap", pagingMap);
-			
-			return resultMap;
-		
-		}else {
-			int count = postDao.countPostList(blogId);
-
-			Map<String, Integer> pagingMap = makePaging(count, pages);
-			
-			Map<String, Object> daoMap = new HashMap<String, Object>();
-			daoMap.put("startNum", pagingMap.get("startNum"));
-			daoMap.put("boardCnt", pagingMap.get("boardCnt"));
-			daoMap.put("blogId", blogId);
-			
-			List<PostVo> result = postDao.getPostList(daoMap);
-			
-			Map<String, Object> resultMap = new HashMap<String, Object>();
-			resultMap.put("postList", result);
-			resultMap.put("pagingMap", pagingMap);
-			
-			return resultMap;
-		}
+		if(categoryNo != -1) pathNo1 = Optional.of(categoryNo);
+		return getPostList(pathNo1, pathNo2, blogId, pages);
 	}
 }

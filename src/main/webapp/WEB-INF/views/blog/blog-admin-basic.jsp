@@ -23,7 +23,7 @@ function form_basic_check(var1) {
 <body>
 	<div id="container">
 		<div id="header">
-			<h1>${blogVo.title}</h1>
+			<h1><a href="${pageContext.request.contextPath}/${blogVo.blogId}" style="color:#ffffff;">${blogVo.title}</a></h1>
 			<c:import url="/WEB-INF/views/includes/blog-navigation.jsp"></c:import>
 		</div>
 		<div id="wrapper">

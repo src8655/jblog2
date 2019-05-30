@@ -52,7 +52,7 @@ public class BlogController {
 		model.addAttribute("mainPostVo", mainPostVo);
 		
 		//포스트 리스트
-		Map<String, Object> postMap = blogService.getPostList(pathNo1, pathNo2, blogId);
+		Map<String, Object> postMap = blogService.getPostList(pathNo1, pathNo2, blogId, 1);
 		List<PostVo> mainPostList = (List<PostVo>)postMap.get("postList");
 		model.addAttribute("mainPostList", mainPostList);
 		Map<String, Integer> pagingMap = (Map<String, Integer>)postMap.get("pagingMap");
