@@ -55,6 +55,7 @@ public class BlogController {
 		Map<String, Object> postMap = blogService.getPostList(pathNo1, pathNo2, blogId, 1);
 		List<PostVo> mainPostList = (List<PostVo>)postMap.get("postList");
 		model.addAttribute("mainPostList", mainPostList);
+		model.addAttribute("mainPostSize", mainPostList.size());
 		Map<String, Integer> pagingMap = (Map<String, Integer>)postMap.get("pagingMap");
 		model.addAttribute("pagingMap", pagingMap);
 		
@@ -167,8 +168,61 @@ public class BlogController {
 		if(result.hasErrors()) return "redirect:/";
 		if(!authUser.getId().equals(blogId)) return "redirect:/";
 		
-		blogService.addPost(postVo);
+		//no값이 있으면 수정
+		if(postVo.getNo() != -1L) {
+			blogService.editPost(postVo);
+		}else{
+			//아니면 생성
+			postVo = blogService.addPost(postVo);
+		}
+		return "redirect:/" + blogId + "/" + postVo.getCategoryNo() + "/" + postVo.getNo();
 		
-		return "redirect:/" + blogId + "/admin/write";
+	}
+	
+	@Auth
+	@RequestMapping("/admin/{pathNo1}/{pathNo2}/postdel")
+	public String postdel(
+			@PathVariable String blogId,
+			@PathVariable Optional<Long> pathNo1,
+			@PathVariable Optional<Long> pathNo2,
+			@AuthUser UserVo authUser
+			) {
+		
+		//잘못된 접근
+		if(!authUser.getId().equals(blogId)) return "redirect:/";
+		if(!pathNo1.isPresent() || !pathNo2.isPresent())  return "redirect:/";
+		
+		blogService.postDelete(pathNo1, pathNo2);
+		
+		return "redirect:/" + blogId + "/" + pathNo1.get();
+	}
+	
+	
+
+	@Auth
+	@RequestMapping("/admin/{pathNo1}/{pathNo2}/postedit")
+	public String postedit(
+			@PathVariable String blogId,
+			@PathVariable Optional<Long> pathNo1,
+			@PathVariable Optional<Long> pathNo2,
+			@AuthUser UserVo authUser,
+			Model model
+			) {
+		
+		//잘못된 접근
+		if(!authUser.getId().equals(blogId)) return "redirect:/";
+		if(!pathNo1.isPresent() || !pathNo2.isPresent())  return "redirect:/";
+		
+		BlogVo blogVo = blogService.getBlogInfo(blogId);
+		model.addAttribute("blogVo", blogVo);
+		
+		//카테고리 불러오기
+		List<CategoryVo> categoryList = blogService.getCategoryList(blogId);
+		model.addAttribute("categoryList", categoryList);
+		
+		PostVo postVo = blogService.getOne(pathNo2.get());
+		model.addAttribute("postVo", postVo);
+		
+		return "blog/blog-admin-write";
 	}
 }

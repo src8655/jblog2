@@ -23,8 +23,8 @@ import com.cafe24.jblog.vo.UserVo;
 
 @Service
 public class BlogService {
-	public static final int BOARD_CNT = 3;	//한번에 보여질 게시글
-	public static final int PAGE_CNT = 3;	//페이지 버튼 개수
+	public static final int BOARD_CNT = 5;	//한번에 보여질 게시글
+	public static final int PAGE_CNT = 5;	//페이지 버튼 개수
 	
 	//파일 저장 위치
 	private static final String SAVE_PATH = "/jblog-uploads";
@@ -132,7 +132,7 @@ public class BlogService {
 		return count != 0;
 	}
 
-	public boolean addPost(PostVo postVo) {
+	public PostVo addPost(PostVo postVo) {
 		return postDao.insert(postVo);
 	}
 
@@ -166,7 +166,6 @@ public class BlogService {
 	public Map<String, Object> getPostList(Optional<Long> pathNo1, Optional<Long> pathNo2, String blogId, int pages) {
 		// 1. pathNo1이 존재하면 => pathNo1 카테고리의 포스트 리스트
 		if(pathNo1.isPresent()) {
-			//int pages = 1;
 			
 			//게시글이 존재하면 그 게시글의 pages위치를 찾는다
 			if(pathNo2.isPresent()) {
@@ -206,7 +205,6 @@ public class BlogService {
 			
 		}else{
 			// 2. pathno1이 존재하지 않으면 => 전체 카테고리의 포스트 리스트
-			//int pages = 1;
 			
 			int count = postDao.countPostList(blogId);
 
@@ -226,6 +224,7 @@ public class BlogService {
 			return resultMap;
 		}
 	}
+	//페이징 만들기
 	public Map<String, Integer> makePaging(int count, int pages) {
 		
 		int lastPage = (int) Math.ceil((double)count/(double)BOARD_CNT);	//마지막 페이지
@@ -250,5 +249,20 @@ public class BlogService {
 		//특정 카테고리
 		if(categoryNo != -1) pathNo1 = Optional.of(categoryNo);
 		return getPostList(pathNo1, pathNo2, blogId, pages);
+	}
+
+	public boolean postDelete(Optional<Long> pathNo1, Optional<Long> pathNo2) {
+		Map<String, Long> map = new HashMap<String, Long>();
+		map.put("pathNo1", pathNo1.get());
+		map.put("pathNo2", pathNo2.get());
+		return postDao.delete(map);
+	}
+
+	public PostVo getOne(Long no) {
+		return postDao.getByNo(no);
+	}
+
+	public boolean editPost(PostVo postVo) {
+		return postDao.update(postVo);
 	}
 }

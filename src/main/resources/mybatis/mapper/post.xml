@@ -7,7 +7,7 @@
 		select count(*) from post where category_no=#{no}
 	</select>
 	
-	<insert id="insert" parameterType="postvo">
+	<insert id="insert" parameterType="postvo" useGeneratedKeys="true" keyProperty="no">
 		insert into post values(
 		null,
 		#{title},
@@ -122,5 +122,23 @@
 		order by no desc) aa
 		where no=#{no}
 	</select>
+	
+	<delete id="delete" parameterType="java.util.Map">
+		delete from post where category_no=#{pathNo1} and no=#{pathNo2}
+	</delete>
+	
+	<select id="getByNo" parameterType="java.util.Map" resultType="postvo">
+		select no, title, content, category_no as categoryNo
+		from post
+		where no=#{no}
+	</select>
+	
+	<update id="update" parameterType="postvo">
+		update post set
+		title=#{title},
+		content=#{content},
+		category_no=#{categoryNo}
+		where no=#{no}
+	</update>
 	
 </mapper>

@@ -3,7 +3,7 @@ package com.cafe24.jblog.vo;
 import org.hibernate.validator.constraints.NotEmpty;
 
 public class PostVo {
-	private Long no;
+	private Long no = -1L;
 	@NotEmpty
 	private String title;
 	@NotEmpty

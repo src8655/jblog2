@@ -57,8 +57,8 @@ function login_form_check(var1) {
 		<c:import url="/WEB-INF/views/includes/navigation.jsp"></c:import>
 		<form class="login-form" id="login_form" action="${pageContext.request.contextPath}/user/auth" method="post">
       		<label>아이디</label> <input type="text" name="id" />
-      		<label>패스워드</label> <input type="text" name="password" />
-      		<input type="button" value="로그인" onclick="login_form_check('login_form');" />
+      		<label>패스워드</label> <input type="password" name="password" />
+      		<input type="button" value="로그인" onclick="login_form_check('login_form');" style="padding:5px;" />
 		</form>
 	</div>
 </body>

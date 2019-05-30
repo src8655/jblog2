@@ -19,9 +19,9 @@ public class PostDao {
 		return (Integer)sqlSession.selectOne("post.countByCategoryNo", no);
 	}
 
-	public boolean insert(PostVo postVo) {
-		int result = sqlSession.insert("post.insert", postVo);
-		return result == 1;
+	public PostVo insert(PostVo postVo) {
+		sqlSession.insert("post.insert", postVo);
+		return postVo;
 	}
 
 	public PostVo getPost(String blogId) {
@@ -56,5 +56,19 @@ public class PostDao {
 		Integer result = (Integer)sqlSession.selectOne("post.countPositionNo2", positionMap);
 		if(result == null) return 1;
 		else return result;
+	}
+
+	public boolean delete(Map<String, Long> map) {
+		int count = sqlSession.delete("post.delete", map);
+		return count == 1;
+	}
+
+	public PostVo getByNo(Long no) {
+		return (PostVo)sqlSession.selectOne("post.getByNo", no);
+	}
+
+	public boolean update(PostVo postVo) {
+		int count = sqlSession.update("post.update", postVo);
+		return count == 1;
 	}
 }

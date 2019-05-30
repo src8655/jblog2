@@ -35,14 +35,17 @@ function form_write_check(var1) {
 			<div id="content" class="full-screen">
 				<c:import url="/WEB-INF/views/includes/blog-admin-navigation.jsp"></c:import>
 				<form action="${pageContext.request.contextPath}/${blogVo.blogId}/admin/write" method="post" id="form_write">
+					<c:if test="${postVo ne null}">
+						<input type="hidden" name="no" value="${postVo.no}" />
+					</c:if>
 			      	<table class="admin-cat-write" style="width:100%;">
 			      		<tr>
 			      			<td class="t">제목</td>
 			      			<td>
-			      				<input type="text" size="60" name="title" style="float:left;padding:6px 0 6px 0;width:89%" />
+			      				<input type="text" size="60" name="title"  <c:if test="${postVo ne null}">value="${postVo.title}"</c:if> style="float:left;padding:6px 0 6px 0;width:89%" />
 				      			<select name="categoryNo" style="float:right;padding:5px 0 5px 0;width:10%;">
 				      				<c:forEach items="${categoryList}" var="cdata">
-				      					<option value="${cdata.no}">${cdata.name}</option>
+				      					<option value="${cdata.no}" <c:if test="${(postVo ne null)&&(postVo.categoryNo eq cdata.no)}">selected</c:if>>${cdata.name}</option>
 				      				</c:forEach>
 				      			</select>
 				      		</td>
@@ -50,7 +53,7 @@ function form_write_check(var1) {
 			      		<tr>
 			      			<td class="t">내용</td>
 			      			<td>
-				      			<textarea name="content" id="contents"></textarea>
+				      			<textarea name="content" id="contents"><c:if test="${postVo ne null}">${postVo.content}</c:if></textarea>
 				      			<script>
 								    CKEDITOR.replace('contents', {
 								    	width : '100%',
@@ -61,7 +64,7 @@ function form_write_check(var1) {
 			      		</tr>
 			      		<tr>
 			      			<td>&nbsp;</td>
-			      			<td class="s"><input type="button" value="포스트하기" onclick="form_write_check('form_write');" /></td>
+			      			<td class="s"><input type="button" <c:if test="${postVo eq null}">value="포스트하기"</c:if> <c:if test="${postVo ne null}">value="포스트 수정하기"</c:if> onclick="form_write_check('form_write');" /></td>
 			      		</tr>
 			      	</table>
 				</form>

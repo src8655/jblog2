@@ -18,16 +18,14 @@ overflow:hidden;
 }
 .blog-content-header h2 {
 float:left;
-width:49%;
-height:35px;
-line-height:35px;
+width:75%;
 padding:0px;
 margin:0px;
 overflow:hidden;
 }
 .blog-content-header div {
 float:right;
-width:49%;
+width:25%;
 height:35px;
 line-height:35px;
 font-size:15px;
@@ -63,6 +61,17 @@ padding:0px;
 margin:0px;
 overflow:hidden;
 }
+.border-content-bottom {
+width:100%;
+text-align:right;
+overflow:hidden;
+}
+.border-content-bottom a {
+color:#676767;
+font-size:12px;
+font-weight:bold;
+text-decoration:none;
+}
 
 /*
 	게시판 리스트 페이징
@@ -70,6 +79,8 @@ overflow:hidden;
 div.pager {
 	width:100%;
 	text-align:center;
+	margin-bottom:15px;
+	overflow:hidden;
 }
 div.pager  ul {
 	height:20px;
@@ -203,12 +214,21 @@ function pagingRefresh(pages, categoryNo, blogId) {
 					<p>
 						${mainPostVo.content}
 					<p>
+					<c:if test="${authUser ne null}">
+						<c:if test="${authUser.id eq blogVo.blogId}">
+							<div class="border-content-bottom">
+								<a href="${pageContext.request.contextPath}/${blogVo.blogId}/admin/${mainPostVo.categoryNo}/${mainPostVo.no}/postedit">수정하기</a>
+								<a href="${pageContext.request.contextPath}/${blogVo.blogId}/admin/${mainPostVo.categoryNo}/${mainPostVo.no}/postdel">삭제하기</a>
+							</div>
+						</c:if>
+					</c:if>
 				</div>
 				<h3 class="blog-list-h">
 					이 블로그 
 					<c:if test="${hasCategory eq false}"><span style="color:#cf8b0c;">전체</span></c:if>
 					<c:if test="${hasCategory eq true}"><span style="color:#cf8b0c;">${mainPostVo.categoryName}</span></c:if>
 					 카테고리 글
+					 <span style="color:#cf8b0c;">(${mainPostSize})</span>
 				</h3>
 				<ul class="blog-list" id="blog_list_bk">
 					<c:forEach items="${mainPostList}" var="plist">

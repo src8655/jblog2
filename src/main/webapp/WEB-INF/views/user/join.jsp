@@ -24,6 +24,7 @@ var check_id = false;
 		$("#btn-checkemail").click(function(){
 			var id = $("#blog-id").val();
 			if(id == "") {
+				alert("아이디를 입력해 주세요.");
 				return;
 			}
 			
@@ -87,25 +88,27 @@ function join_form_check(var1) {
 	<div class="center-content">
 		<h1 class="logo">JBlog</h1>
 		<c:import url="/WEB-INF/views/includes/navigation.jsp"></c:import>
-		<form class="join-form" id="join-form" method="post" action="${pageContext.request.contextPath}/user/join">
+		<form class="login-form" id="join-form" method="post" action="${pageContext.request.contextPath}/user/join">
 			<label class="block-label" for="name">이름</label>
 			<input id="name"name="name" type="text" value="">
 			
 			<label class="block-label" for="blog-id">아이디</label>
-			<input id="blog-id" name="id" type="text"> 
-			<input id="btn-checkemail" type="button" value="id 중복체크">
-			<img id="img-checkemail" style="display: none;" src="${pageContext.request.contextPath}/assets/images/check.png">
+			<div style="overflow:hidden;line-height:40px;">
+			<input id="blog-id" name="id" type="text" style="width:50%;float:left;margin-right:3px;" /> 
+			<input id="btn-checkemail" type="button" value="id 중복체크" style="float:left;height:28px;padding:0 5px 0 5px;" />
+			<img id="img-checkemail" style="display:none;float:left;" src="${pageContext.request.contextPath}/assets/images/check.png">
+			</div>
 
 			<label class="block-label" for="password">패스워드</label>
 			<input id="password" name="password" type="password" />
 
 			<fieldset>
-				<legend>약관동의</legend>
-				<input id="agree-prov" type="checkbox" name="agreeProv" value="y">
-				<label class="l-float">서비스 약관에 동의합니다.</label>
+				<label class="block-label">약관동의</label>
+				<input id="agree-prov" type="checkbox" name="agreeProv" value="y" style="float:left;" />
+				<label class="l-float" for="agree-prov">서비스 약관에 동의합니다.</label>
 			</fieldset>
 
-			<input type="button" value="가입하기" onclick="join_form_check('join-form');" />
+			<input type="button" value="가입하기" onclick="join_form_check('join-form');" style="padding:5px;" />
 
 		</form>
 	</div>
